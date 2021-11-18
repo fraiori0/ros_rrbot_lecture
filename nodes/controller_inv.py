@@ -86,11 +86,11 @@ if __name__ == '__main__':
             # Error
             ex = ctrl.x_des - x
             # Inverse Kinematics: what's the speed desired for the joints
-            # Jinv = np.linalg.inv(J)
-            Jpinv = np.linalg.pinv(J)
-            rho = 0.01
-            Jdpinv = J.T.dot(np.linalg.inv(J.dot(J.T) + (rho**2)*np.eye(2)))
-            qd_des = Jdpinv.dot(K*ex)
+            # print("-----------")
+            # print(J)
+            # print(x)
+            Jinv = np.linalg.pinv(J)
+            qd_des = Jinv.dot(K*ex)
             # Forward Euler: what's the position desired for the joints?
             q_des = ctrl.q + dt0 * qd_des
             # Publish command

@@ -90,7 +90,7 @@ if __name__ == '__main__':
             Jpinv = np.linalg.pinv(J)
             rho = 1e0
             Jdpinv = J.T.dot(np.linalg.inv(J.dot(J.T) + (rho**2)*np.eye(2)))
-            qd_des = Jdpinv.dot(K*ex)
+            qd_des = Jpinv.dot(K*ex)
             # Forward Euler: what's the position desired for the joints?
             q_des = ctrl.q + dt0 * qd_des
 

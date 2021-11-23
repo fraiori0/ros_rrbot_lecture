@@ -88,11 +88,12 @@ if __name__ == '__main__':
             # Inverse Kinematics: what's the speed desired for the joints
             # Jinv = np.linalg.inv(J)
             Jpinv = np.linalg.pinv(J)
-            rho = 0.01
+            rho = 1e0
             Jdpinv = J.T.dot(np.linalg.inv(J.dot(J.T) + (rho**2)*np.eye(2)))
             qd_des = Jdpinv.dot(K*ex)
             # Forward Euler: what's the position desired for the joints?
             q_des = ctrl.q + dt0 * qd_des
+
             # Publish command
             ctrl.publish_joint_cmd(q_des)
             # sleep until next iteration

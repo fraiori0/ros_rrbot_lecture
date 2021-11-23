@@ -23,11 +23,10 @@ if __name__ == '__main__':
         joint_cmd_msg.layout.dim.append(
             MultiArrayDimension(label='positions', size=2, stride=1))
 
-        # generate an array of shape (2,) with random number between 0 and 1
-        # np.random.rand(2)
+        # generate an array of shape (2,) with random number between 0 and 1, and cast it to a list
+        # list(np.random.rand(2))
 
         while not rospy.is_shutdown():
-            joint_cmd_msg.data = list(np.random.rand(2))
             rate.sleep()
 
     except rospy.ROSInterruptException:

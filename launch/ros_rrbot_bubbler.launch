@@ -1,0 +1,7 @@
+<launch>
+    <!-- Start the controller node -->
+    <node name="motor_bubbler" pkg="ros_rrbot_lecture" type="bubbler.py" respawn="false" output="screen">
+        <param name="hz" type="double" value="100" />
+    </node>
+
+</launch>

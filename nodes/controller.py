@@ -58,7 +58,7 @@ class RRBot_Controller:
 
 
 # To publish a new x_des
-# $ rostopic pub /rrbot/x_des geometry_msgs/Point '{x: -0.4, y: 0.0, z: 0.7}'
+# $ rostopic pub /rrbot/x_des geometry_msgs/Point '{x: 0.9, y: 0.0, z: 2.5}'
 
 
 if __name__ == '__main__':
@@ -79,25 +79,36 @@ if __name__ == '__main__':
         K = 2.0
 
         while not rospy.is_shutdown():
+
             # Forward kinematics: where is the end-effector?
             x = ctrl.f(ctrl.q)
             # Jacobian
             J = ctrl.J(ctrl.q)
             # Error
             ex = ctrl.x_des - x
-            # Inverse Kinematics: what's the speed desired for the joints
+
+            # Closed-loop Inverse Kinematics
+            # -- inverse
             # Jinv = np.linalg.inv(J)
+            # -- pseudo-inverse
             Jpinv = np.linalg.pinv(J)
+            # -- damped pseudo-inverse
             rho = 1e0
             Jdpinv = J.T.dot(np.linalg.inv(J.dot(J.T) + (rho**2)*np.eye(2)))
+
+
             qd_des = Jpinv.dot(K*ex)
+            qd_des = Jdpinv.dot(K*ex)
+
             # Forward Euler: what's the position desired for the joints?
             q_des = ctrl.q + dt0 * qd_des
 
             # Publish command
             ctrl.publish_joint_cmd(q_des)
+
             # sleep until next iteration
             rate.sleep()
+
     except rospy.ROSInterruptException:
         pass
     rospy.spin()

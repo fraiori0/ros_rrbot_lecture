@@ -11,6 +11,7 @@
   <xacro:property name="height3" value="1" /> <!-- Link 3 -->
   <xacro:property name="camera_link" value="0.05" /> <!-- Size of square 'camera' box -->
   <xacro:property name="axel_offset" value="0.05" /> <!-- Space btw top of beam and the each joint -->
+  <xacro:property name="joint_damping" value="0.05" /> <!-- Damping coefficient of each joint -->
 
   <!-- Import all Gazebo-customization elements, including Gazebo colors -->
   <xacro:include filename="$(find ros_rrbot_lecture)/resources/urdf/rrbot.gazebo" />
@@ -55,7 +56,7 @@
     <child link="link2"/>
     <origin xyz="0 ${width} ${height1 - axel_offset}" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <dynamics damping="0.7"/>
+    <dynamics damping="${joint_damping}"/>
   </joint>
 
   <!-- Middle Link -->
@@ -90,7 +91,7 @@
     <child link="link3"/>
     <origin xyz="0 ${width} ${height2 - axel_offset*2}" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <dynamics damping="0.7"/>
+    <dynamics damping="${joint_damping}"/>
   </joint>
 
   <!-- Top Link -->

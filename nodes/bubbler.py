@@ -10,8 +10,7 @@ if __name__ == '__main__':
         rospy.init_node(NODE_NAME)
 
         # Retrieve rate from ROS server parameters, set to default if no specific value has been set
-        HZ = rospy.get_param('~hz', default=100.0)
-        dt0 = 1.0/HZ
+        HZ = rospy.get_param('~hz', default=50.0)
         rate = rospy.Rate(HZ)
 
         # Publisher
@@ -23,7 +22,7 @@ if __name__ == '__main__':
         joint_cmd_msg.layout.dim.append(
             MultiArrayDimension(label='positions', size=2, stride=1))
 
-        # generate an array of shape (2,) with random number between 0 and 1, and cast it to a list
+        # to generate an array of shape (2,) with random number between 0 and 1, and cast it to a list, use:
         # list(np.random.rand(2))
 
         while not rospy.is_shutdown():

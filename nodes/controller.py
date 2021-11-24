@@ -7,8 +7,9 @@ from std_msgs.msg import Float64MultiArray, MultiArrayDimension
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Point
 
+
 class RRBot_Controller:
-    def __init__(self, l1, l2 , l3) -> None:
+    def __init__(self, l1, l2, l3) -> None:
         """ 
         l1,l2,l3 are the lengths of the links of RRBot, starting from the base
         """
@@ -22,17 +23,21 @@ class RRBot_Controller:
 
         # Publishers
         # Joint actuation
-        self.joint_cmd_pub = rospy.Publisher('/rrbot/joints_position_controller/command', Float64MultiArray, queue_size=5)
+        self.joint_cmd_pub = rospy.Publisher(
+            '/rrbot/joints_position_controller/command', Float64MultiArray, queue_size=5)
         # init prototype message, not needed but helps to avoid doing it everytime we publish
         self.joint_cmd_msg = Float64MultiArray()
-        self.joint_cmd_msg.layout.dim.append(MultiArrayDimension(label='positions', size=self.q.shape[0], stride=1))
+        self.joint_cmd_msg.layout.dim.append(MultiArrayDimension(
+            label='positions', size=self.q.shape[0], stride=1))
 
         # Subscribers
         # Joint state
-        self.joint_state_sub = rospy.Subscriber('/rrbot/joint_states', JointState, self.update_joint_state, queue_size=5)
+        self.joint_state_sub = rospy.Subscriber(
+            '/rrbot/joint_states', JointState, self.update_joint_state, queue_size=5)
         # Desired End-Effector position
-        self.x_des_sub = rospy.Subscriber('/rrbot/x_des', Point, self.update_x_des, queue_size=5)
-    
+        self.x_des_sub = rospy.Subscriber(
+            '/rrbot/x_des', Point, self.update_x_des, queue_size=5)
+
     def f(self, q):
         """ Forward kinematics. Should return a 2D array with the x-z position of the end-effector"""
         return np.array((
@@ -43,15 +48,15 @@ class RRBot_Controller:
     def J(self, q):
         """Compute the Jacobian for the given joint state"""
         return np.array(
-            [[ self.l2*cos(q[0]) + self.l3*cos(q[0] + q[1]),  self.l3*cos(q[0] + q[1])],
-            [-self.l2*sin(q[0]) - self.l3*sin(q[0] + q[1]), -self.l3*sin(q[0] + q[1])]])
-    
+            [[self.l2*cos(q[0]) + self.l3*cos(q[0] + q[1]),  self.l3*cos(q[0] + q[1])],
+             [-self.l2*sin(q[0]) - self.l3*sin(q[0] + q[1]), -self.l3*sin(q[0] + q[1])]])
+
     def update_joint_state(self, joint_state):
         self.q = np.array(joint_state.position)
-    
+
     def update_x_des(self, point):
         self.x_des = np.array((point.x, point.z))
-    
+
     def publish_joint_cmd(self, q_des):
         self.joint_cmd_msg.data = list(q_des)
         self.joint_cmd_pub.publish(self.joint_cmd_msg)
@@ -65,7 +70,7 @@ if __name__ == '__main__':
     try:
 
         NODE_NAME = 'rrbot_controller'
-        # Start node 
+        # Start node
         rospy.init_node(NODE_NAME)
 
         # Retrieve rate from ROS server parameters, set to default if no specific value has been set
@@ -73,7 +78,7 @@ if __name__ == '__main__':
         dt0 = 1.0/HZ
         rate = rospy.Rate(HZ)
 
-        ctrl = RRBot_Controller(2,1,1)
+        ctrl = RRBot_Controller(2, 1, 1)
 
         # Gain for closed-loop Inverse Kinematics
         K = 2.0
@@ -93,12 +98,11 @@ if __name__ == '__main__':
             # -- pseudo-inverse
             Jpinv = np.linalg.pinv(J)
             # -- damped pseudo-inverse
-            rho = 1e0
-            Jdpinv = J.T.dot(np.linalg.inv(J.dot(J.T) + (rho**2)*np.eye(2)))
-
+            # rho = 1e0
+            # Jdpinv = J.T.dot(np.linalg.inv(J.dot(J.T) + (rho**2)*np.eye(2)))
 
             qd_des = Jpinv.dot(K*ex)
-            qd_des = Jdpinv.dot(K*ex)
+            # qd_des = Jdpinv.dot(K*ex)
 
             # Forward Euler: what's the position desired for the joints?
             q_des = ctrl.q + dt0 * qd_des

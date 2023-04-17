@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  geometry_msgs
+  dynamic_reconfigure
 )
 
 ## System dependencies are found with CMake's conventions
@@ -87,11 +89,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * uncomment the "generate_dynamic_reconfigure_options" section below
 ##     and list every .cfg file to be processed
 
-## Generate dynamic reconfigure parameters in the 'cfg' folder
-# generate_dynamic_reconfigure_options(
-#   cfg/DynReconf1.cfg
-#   cfg/DynReconf2.cfg
-# )
+# Generate dynamic reconfigure parameters in the 'cfg' folder
+generate_dynamic_reconfigure_options(
+  config/Controller.cfg
+)
 
 ###################################
 ## catkin specific configuration ##
@@ -105,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES ros_rrbot_lecture
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs geometry_msgs dynamic_reconfigure
 #  DEPENDS system_lib
 )
 
@@ -160,6 +161,7 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
+  nodes/controller_pinocchio.py
   nodes/controller.py
   nodes/bubbler.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

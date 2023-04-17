@@ -1,3 +1,6 @@
+"""
+If the SymPy module is missing, install it with "$ pip install sympy"
+"""
 from sympy import symbols, Symbol, Matrix, diff, simplify, sin, cos
 from pprint import pprint
 

@@ -50,12 +50,12 @@
     </inertial>
   </link>
 
-  <joint name="joint1" type="continuous">
+  <joint name="joint1" type="revolute">
     <parent link="link1"/>
     <child link="link2"/>
     <origin xyz="0 ${width} ${height1 - axel_offset}" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <dynamics damping="${joint_damping}"/>
+    <limit upper="314" lower="-314" effort="200" velocity="200"/>
   </joint>
 
   <!-- Middle Link -->
@@ -85,12 +85,12 @@
     </inertial>
   </link>
 
-  <joint name="joint2" type="continuous">
+  <joint name="joint2" type="revolute">
     <parent link="link2"/>
     <child link="link3"/>
     <origin xyz="0 ${width} ${height2 - axel_offset*2}" rpy="0 0 0"/>
     <axis xyz="0 1 0"/>
-    <dynamics damping="${joint_damping}"/>
+    <limit upper="314" lower="-314" effort="200" velocity="200"/>
   </joint>
 
   <!-- Top Link -->
@@ -120,26 +120,23 @@
     </inertial>
   </link>
 
-  <transmission name="tran1">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="joint1">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor1">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
-
-  <transmission name="tran2">
-    <type>transmission_interface/SimpleTransmission</type>
-    <joint name="joint2">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-    </joint>
-    <actuator name="motor2">
-      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-      <mechanicalReduction>1</mechanicalReduction>
-    </actuator>
-  </transmission>
+  <!-- EE Link to have a reference frame, fixed on the last link of the robot -->
+  <joint name="ee_joint" type="fixed">
+    <parent link="link3"/>
+    <child link="ee_frame"/>
+    <origin xyz="0 0 ${height3/2}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  
+  <link name="ee_frame">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia
+	  ixx="0.001" ixy="0.0" ixz="0.0"
+	  iyy="0.001" iyz="0.0"
+	  izz="0.001"/>
+    </inertial>
+  </link>
 
 </robot>

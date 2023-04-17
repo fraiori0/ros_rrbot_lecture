@@ -1,0 +1,14 @@
+<launch>
+    <!-- Set namespace for the controller -->
+    <group ns="rrbot">
+
+        <!-- Process the Xacro written without tags and load the URDF into the ROS Parameter Server -->
+        <param name="rrbot_controller/pinocchio_robot_description" command="$(find xacro)/xacro --inorder '$(find ros_rrbot_lecture)/resources/urdf/rrbot_pinocchio.xacro'" />
+        
+        <!-- Start the controller node -->
+        <node name="rrbot_controller" pkg="ros_rrbot_lecture" type="controller_pinocchio.py" respawn="false" output="screen">
+            <param name="hz" type="double" value="100" />
+        </node>
+    </group>
+  
+</launch>

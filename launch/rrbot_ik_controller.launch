@@ -1,7 +1,10 @@
 <launch>
-    <!-- Start the controller node -->
-    <node name="rrbot_controller" pkg="ros_rrbot_lecture" type="controller.py" respawn="false" output="screen">
-        <param name="hz" type="double" value="100" />
-    </node>
+    <!-- Set namespace for the controller -->
+    <group ns="rrbot">
+        <!-- Start the controller node -->
+        <node name="rrbot_controller" pkg="ros_rrbot_lecture" type="controller.py" respawn="false" output="screen">
+            <param name="hz" type="double" value="100" />
+        </node>
+    </group>
   
 </launch>

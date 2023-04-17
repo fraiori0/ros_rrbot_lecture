@@ -1,5 +1,5 @@
 rrbot:
-  # Publish all joint states -----------------------------------
+  # Publish all joint states
   joint_state_controller:
     type: joint_state_controller/JointStateController
     publish_rate: 100  
@@ -10,6 +10,6 @@ rrbot:
       - joint1
       - joint2
     joint1:
-      pid: {p: 1000.0, i: 0.0, d: 3.0}
+      pid: {p: 1000.0, i: 0.1, d: 3.0}
     joint2:
-      pid: {p: 1000.0, i: 0.0, d: 3.0}
+      pid: {p: 1000.0, i: 0.1, d: 3.0}
